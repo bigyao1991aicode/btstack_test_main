@@ -170,7 +170,8 @@ static void bl_packet_to_host(uint8_t pkt_type, uint16_t src_id, uint8_t *param,
     }
     case BT_HCI_ACL_DATA: {
       prio = false;
-      tlt_len = bt_onchiphci_hanlde_rx_acl(param, buf_data);
+      /* Renamed in SDK controller lib >= 1.6.x: "hanlde" -> "handle" */
+      tlt_len = bt_onchiphci_handle_rx_acl(param, buf_data);
       if (tlt_len > CONFIG_ACL_RX_BUF_LEN) {
         printf("acl pkg is too big\r\n");
       }
@@ -624,7 +625,10 @@ static void settings_delete(void *context, uint32_t tag)
 static void settings_erase()
 {
   //like bflb_mtd_erase_all
-  if (ef_port_erase(0, 32768) == 0) {
+  //Erase all BT settings: this SDK port implements EasyFlash4 on top of
+  //LittleFS, so ef_port_erase() no longer exists. ef_env_set_default()
+  //clears the whole KV store instead.
+  if (ef_env_set_default() == EF_NO_ERR) {
     printf("erase success\n");
   }
 }

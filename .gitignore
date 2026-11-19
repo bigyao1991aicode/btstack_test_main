@@ -1,4 +1,4 @@
 build
 codecs
 *.ps1
-dump_dma.py
+dump_dma.pybuild_log.txt

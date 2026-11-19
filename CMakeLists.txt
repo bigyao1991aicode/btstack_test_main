@@ -6,8 +6,12 @@ find_package(bouffalo_sdk REQUIRED HINTS $ENV{BL_SDK_BASE})
 
 sdk_set_main_file(main.c)
 sdk_add_include_directories(.)
-sdk_add_include_directories(./btblecontroller/btble_inc)
-sdk_add_static_library(btblecontroller/lib/libbtblecontroller_bl616_ble1m0s1sbredr1.a)
+# Use the SDK bluetooth component controller lib (selected via defconfig:
+# CONFIG_BLUETOOTH=y + CONFIG_BTBLECONTROLLER_LIB). The bundled legacy
+# btblecontroller lib is not linked anymore - it initializes the radio in a
+# way that no advertisement is actually transmitted on this SDK version.
+# sdk_add_include_directories(./btblecontroller/btble_inc)
+# sdk_add_static_library(btblecontroller/lib/libbtblecontroller_bl616_ble1m0s1sbredr1.a)
 project(btstack_test)
 
 SET(BTSTACK_ROOT ${CMAKE_CURRENT_BINARY_DIR}/../btstack)
@@ -54,7 +58,7 @@ set(SOURCES
 list(SORT SOURCES)
 
 
-set(EXAMPLE "a2dp_sink_demo")
+set(EXAMPLE "gatt_counter")
 find_package (Python REQUIRED COMPONENTS Interpreter)
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE}.h

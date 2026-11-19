@@ -1,0 +1,42 @@
+# btstack_test project configuration
+# Translated from proj.conf (cmake-style) to Kconfig defconfig format.
+# The SDK build system (project.build) only reads this file, NOT proj.conf.
+
+# Components
+CONFIG_FREERTOS             =y
+CONFIG_POSIX                =y
+
+CONFIG_TLSF                 =y
+CONFIG_SHELL                =y
+CONFIG_RF                   =y
+CONFIG_PSRAM                =y
+
+CONFIG_VSNPRINTF_FLOAT      =y
+CONFIG_VSNPRINTF_FLOAT_EX   =y
+CONFIG_VSNPRINTF_LONG_LONG  =y
+
+# mbedtls: keep software crypto (no HW offload)
+CONFIG_MBEDTLS_AES_USE_HW    =n
+CONFIG_MBEDTLS_BIGNUM_USE_HW =n
+CONFIG_MBEDTLS_ECC_USE_HW    =n
+CONFIG_MBEDTLS_SHA1_USE_HW   =n
+CONFIG_MBEDTLS_SHA256_USE_HW =n
+CONFIG_MBEDTLS_SHA512_USE_HW =n
+
+# other
+CONFIG_COREDUMP             =n
+CONFIG_CODEC_USE_I2S_TX     =y
+CONFIG_CODEC_USE_I2S_RX     =n
+CONFIG_MSP_USE_STATIC_RAM   =n
+
+# For bt status save
+CONFIG_BFLB_MTD             =y
+CONFIG_PARTITION            =y
+CONFIG_EASYFLASH4           =y
+
+# Bluetooth: use the SDK prebuilt controller (lib 1.6.207, same as btble/peripheral)
+# with btstack as the host stack. The bundled legacy controller lib in
+# btblecontroller/lib accepts HCI commands but never transmits on air.
+CONFIG_BLUETOOTH            =y
+CONFIG_BTBLECONTROLLER_LIB  =ble1m0s1bredr0
+CONFIG_BLE_HOST_DISABLE     =y
