@@ -12,16 +12,36 @@
 
 ## 1. 环境准备
 
-### 1.1 获取代码
+### 1.1 获取代码（版本锁定，一比一复现）
+
+三个组件均锁定到已验证的具体版本：
 
 ```bash
+# 1) bouffalo_sdk —— 锁定到验证过的 release tag（master 持续演进，必须 checkout）
 git clone https://github.com/bouffalolab/bouffalo_sdk.git
-cd ./bouffalo_sdk/examples
+cd ./bouffalo_sdk
+git checkout v2.3.35          # == commit 63784aa0d，本工程所有适配均基于此版本
+
+# 2) 本工程
+cd ./examples
 git clone https://github.com/bigyao1991aicode/btstack_test_main.git btstack_test
 cd ./btstack_test
-# btstack 以 gitlink 形式记录，需手动获取（指定 v1.6.1）
+
+# 3) btstack —— 以 gitlink 形式记录，需手动获取（v1.6.1 是不可变 tag，
+#    检出后处于 detached HEAD，精确对应 commit 2b49e57bd）
 rm -rf ./btstack
-git clone https://github.com/bluekitchen/btstack.git -b v1.6.1
+git clone https://github.com/bluekitchen/btstack.git -b v1.6.1 btstack
+```
+
+克隆完成后可执行以下命令核对版本（全部一致即为可复现环境）：
+
+```bash
+git -C ../../ describe --tags
+# bouffalo_sdk 期望输出：v2.3.35
+git -C btstack describe --tags
+# btstack 期望输出：v1.6.1
+git describe --tags --always
+# 本工程期望输出：v1.6.1 适配版对应的 commit（如 7b57c1d）
 ```
 
 ### 1.2 工具链
