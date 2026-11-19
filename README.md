@@ -14,23 +14,26 @@
 
 ### 1.1 获取代码（版本锁定，一比一复现）
 
-三个组件均以**不可变 commit hash** 为准锁定（tag 仅作参考注释，checkout 使用 hash，杜绝 tag 被移动导致的偏差）：
+每个组件提供 **tag 与 commit hash 两种锁定方式，任选其一**（当前二者指向同一提交，结果等价；hash 不可变，若 tag 被上游移动请以 hash 为准）：
 
 ```bash
-# 1) bouffalo_sdk —— 锁定到已验证 commit（对应 release tag v2.3.35）
+# 1) bouffalo_sdk
 git clone https://github.com/bouffalolab/bouffalo_sdk.git
 cd ./bouffalo_sdk
-git checkout 63784aa0d          # 所有适配均基于此 commit（== tag v2.3.35）
+git checkout v2.3.35            # 方式 A：按 release tag
+# 或 git checkout 63784aa0d     # 方式 B：按 commit hash（不可变锚点，适配均基于此提交）
 
 # 2) 本工程（main 分支即含全部修复）
 cd ./examples
 git clone https://github.com/bigyao1991aicode/btstack_test_main.git btstack_test
 cd ./btstack_test
 
-# 3) btstack —— 以 gitlink 形式记录，需手动获取并锁定 commit（对应 tag v1.6.1）
+# 3) btstack —— 以 gitlink 形式记录，需手动获取
 rm -rf ./btstack
-git clone https://github.com/bluekitchen/btstack.git btstack
-git -C btstack checkout 2b49e57bd
+git clone https://github.com/bluekitchen/btstack.git -b v1.6.1 btstack   # 方式 A：按 tag
+# 或方式 B（hash 直锁）：
+#   git clone https://github.com/bluekitchen/btstack.git btstack
+#   git -C btstack checkout 2b49e57bd
 ```
 
 克隆完成后执行以下命令核对，三条全部与期望值一致即为可复现环境：
