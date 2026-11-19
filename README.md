@@ -14,34 +14,34 @@
 
 ### 1.1 获取代码（版本锁定，一比一复现）
 
-三个组件均锁定到已验证的具体版本：
+三个组件均以**不可变 commit hash** 为准锁定（tag 仅作参考注释，checkout 使用 hash，杜绝 tag 被移动导致的偏差）：
 
 ```bash
-# 1) bouffalo_sdk —— 锁定到验证过的 release tag（master 持续演进，必须 checkout）
+# 1) bouffalo_sdk —— 锁定到已验证 commit（对应 release tag v2.3.35）
 git clone https://github.com/bouffalolab/bouffalo_sdk.git
 cd ./bouffalo_sdk
-git checkout v2.3.35          # == commit 63784aa0d，本工程所有适配均基于此版本
+git checkout 63784aa0d          # 所有适配均基于此 commit（== tag v2.3.35）
 
-# 2) 本工程
+# 2) 本工程（main 分支即含全部修复）
 cd ./examples
 git clone https://github.com/bigyao1991aicode/btstack_test_main.git btstack_test
 cd ./btstack_test
 
-# 3) btstack —— 以 gitlink 形式记录，需手动获取（v1.6.1 是不可变 tag，
-#    检出后处于 detached HEAD，精确对应 commit 2b49e57bd）
+# 3) btstack —— 以 gitlink 形式记录，需手动获取并锁定 commit（对应 tag v1.6.1）
 rm -rf ./btstack
-git clone https://github.com/bluekitchen/btstack.git -b v1.6.1 btstack
+git clone https://github.com/bluekitchen/btstack.git btstack
+git -C btstack checkout 2b49e57bd
 ```
 
-克隆完成后可执行以下命令核对版本（全部一致即为可复现环境）：
+克隆完成后执行以下命令核对，三条全部与期望值一致即为可复现环境：
 
 ```bash
-git -C ../../ describe --tags
-# bouffalo_sdk 期望输出：v2.3.35
-git -C btstack describe --tags
-# btstack 期望输出：v1.6.1
-git describe --tags --always
-# 本工程期望输出：v1.6.1 适配版对应的 commit（如 7b57c1d）
+git -C ../../ rev-parse HEAD
+# 期望：63784aa0d...（tag v2.3.35）
+git -C btstack rev-parse HEAD
+# 期望：2b49e57bd...（tag v1.6.1）
+git rev-parse HEAD
+# 期望：5956a7a...（或更新，本仓库 main 分支最新提交）
 ```
 
 ### 1.2 工具链
